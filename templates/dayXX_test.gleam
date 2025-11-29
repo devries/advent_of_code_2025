@@ -1,4 +1,4 @@
-import dayXX/solution
+import day<%= day %>/solution
 import gleam/string
 import gleeunit/should
 
