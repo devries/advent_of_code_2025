@@ -26,7 +26,7 @@ fn explain() -> glint.Command(Nil) {
   use _, _, _ <- glint.command()
 
   io.println(
-    "Use \"gleam run new -d <day>\" to use the code template to start a new day of\n        advent of code.\n    <day> should be an integer.",
+    "Use \"gleam run new --day=<day>\" to use the code template to start a new day of\n        advent of code.\n    <day> should be an integer.",
   )
   io.println("")
   io.println(
