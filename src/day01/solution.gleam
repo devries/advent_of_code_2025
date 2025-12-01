@@ -47,21 +47,19 @@ pub fn solve_p2(lines: List(String)) -> Result(String, String) {
   let start = 50
 
   lines
-  |> list.map_fold(#(start, 0), fn(acc, line) {
+  |> list.fold(#(start, 0), fn(acc, line) {
     let cur = case acc.0, parse_line(line) {
       // Don't count starting at 0 and going down as a zero pass
       0, delta if delta < 0 -> 100 + delta
       s, delta -> s + delta
     }
-    // let cur = acc.0 + parse_line(line)
     let add = count_zero_passes(cur)
     let cur = cur % 100
     case cur < 0 {
-      True -> #(#(100 + cur, acc.1 + add), 100 + cur)
-      False -> #(#(cur, acc.1 + add), cur)
+      True -> #(100 + cur, acc.1 + add)
+      False -> #(cur, acc.1 + add)
     }
   })
-  |> pair.first
   |> pair.second
   |> int.to_string
   |> Ok
