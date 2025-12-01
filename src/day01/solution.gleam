@@ -32,12 +32,7 @@ pub fn solve_p1(lines: List(String)) -> Result(String, String) {
     }
   })
   |> pair.second
-  |> list.count(fn(v) {
-    case v {
-      0 -> True
-      _ -> False
-    }
-  })
+  |> list.count(fn(v) { v == 0 })
   |> int.to_string
   |> Ok
 }
@@ -48,17 +43,12 @@ pub fn solve_p2(lines: List(String)) -> Result(String, String) {
 
   lines
   |> list.fold(#(start, 0), fn(acc, line) {
-    let cur = case acc.0, parse_line(line) {
+    case acc.0, parse_line(line) {
       // Don't count starting at 0 and going down as a zero pass
       0, delta if delta < 0 -> 100 + delta
       s, delta -> s + delta
     }
-    let add = count_zero_passes(cur)
-    let cur = cur % 100
-    case cur < 0 {
-      True -> #(100 + cur, acc.1 + add)
-      False -> #(cur, acc.1 + add)
-    }
+    |> turn_and_count_zeros(acc.1)
   })
   |> pair.second
   |> int.to_string
@@ -79,17 +69,13 @@ pub fn parse_line(line: String) -> Int {
   }
 }
 
-pub fn count_zero_passes(val: Int) -> Int {
-  count_zero_acc(val, 0)
-}
-
-pub fn count_zero_acc(val: Int, count: Int) -> Int {
+pub fn turn_and_count_zeros(val: Int, count: Int) -> #(Int, Int) {
   case val {
-    val if val > 100 -> count_zero_acc(val - 100, count + 1)
-    val if val < 0 -> count_zero_acc(val + 100, count + 1)
-    0 -> count + 1
-    // 100 is also landing at 0
-    100 -> count + 1
-    _ -> count
+    val if val > 100 -> turn_and_count_zeros(val - 100, count + 1)
+    val if val < 0 -> turn_and_count_zeros(val + 100, count + 1)
+    0 -> #(0, count + 1)
+    // 100 is 0 too
+    100 -> #(0, count + 1)
+    _ -> #(val, count)
   }
 }
