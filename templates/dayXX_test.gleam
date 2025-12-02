@@ -6,12 +6,10 @@ const testinput = ""
 
 pub fn part1_test() {
   let lines = string.split(testinput, "\n")
-  solution.solve_p1(lines)
-  |> should.equal(Ok(""))
+  assert solution.solve_p1(lines) == Ok("")
 }
 
 pub fn part2_test() {
   let lines = string.split(testinput, "\n")
-  solution.solve_p2(lines)
-  |> should.equal(Ok(""))
+  assert solution.solve_p2(lines) == Ok("")
 }
