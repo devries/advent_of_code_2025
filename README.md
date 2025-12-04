@@ -1,7 +1,7 @@
 # Advent of Code 2025
 
 [![Tests](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml/badge.svg)](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml)
-[![Stars: 6](https://img.shields.io/badge/⭐_Stars-6-yellow)](https://adventofcode.com/2025)
+[![Stars: 8](https://img.shields.io/badge/⭐_Stars-8-yellow)](https://adventofcode.com/2025)
 
 This year will be my second year doing Advent of Code in [Gleam](https://gleam.run).
 Last year I was still learning the language, and in the past year I have used it
@@ -38,3 +38,4 @@ information.
 - [Day 1](https://adventofcode.com/2025/day/1): [⭐ ⭐ solution](src/day01/solution.gleam)
 - [Day 2](https://adventofcode.com/2025/day/2): [⭐ ⭐ solution](src/day02/solution.gleam)
 - [Day 3](https://adventofcode.com/2025/day/3): [⭐ ⭐ solution](src/day03/solution.gleam)
+- [Day 4](https://adventofcode.com/2025/day/4): [⭐ ⭐ solution](src/day04/solution.gleam)
