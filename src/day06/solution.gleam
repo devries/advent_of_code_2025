@@ -39,7 +39,7 @@ pub fn solve_p1(lines: List(String)) -> Result(String, String) {
 pub fn solve_p2(lines: List(String)) -> Result(String, String) {
   lines
   |> list.map(fn(line) {
-    string.to_graphemes(line)
+    string.to_utf_codepoints(line)
     |> list.reverse
   })
   |> list.transpose
@@ -47,9 +47,9 @@ pub fn solve_p2(lines: List(String)) -> Result(String, String) {
     let l = list.length(column)
     let #(numbers, operation) = list.split(column, l - 1)
     use value <- result.map(
-      string.join(numbers, "") |> string.trim |> int.parse,
+      string.from_utf_codepoints(numbers) |> string.trim |> int.parse,
     )
-    #(value, operation)
+    #(value, string.from_utf_codepoints(operation))
   })
   |> accumulate_operation(0, [])
   |> int.to_string
@@ -76,7 +76,7 @@ fn perform_calculation(parts: List(String)) -> Int {
 }
 
 fn accumulate_operation(
-  tuples: List(#(Int, List(String))),
+  tuples: List(#(Int, String)),
   sum: Int,
   values: List(Int),
 ) -> Int {
@@ -84,12 +84,12 @@ fn accumulate_operation(
     [] -> sum
     [first, ..rest] -> {
       case first {
-        #(n, [" "]) -> accumulate_operation(rest, sum, [n, ..values])
-        #(n, ["*"]) -> {
+        #(n, " ") -> accumulate_operation(rest, sum, [n, ..values])
+        #(n, "*") -> {
           let product = list.fold([n, ..values], 1, fn(p, v) { p * v })
           accumulate_operation(rest, sum + product, [])
         }
-        #(n, ["+"]) ->
+        #(n, "+") ->
           accumulate_operation(rest, sum + int.sum([n, ..values]), [])
         _ -> panic as "unexpected tuple"
       }
