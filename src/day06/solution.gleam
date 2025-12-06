@@ -67,7 +67,7 @@ fn perform_calculation(parts: List(String)) -> Int {
 
   case operation {
     ["+"] -> int.sum(int_values)
-    ["*"] -> list.fold(int_values, 1, fn(acc, v) { acc * v })
+    ["*"] -> int.product(int_values)
     _ -> {
       echo parts
       panic as "unexpected operation"
@@ -86,8 +86,7 @@ fn accumulate_operation(
       case first {
         #(n, " ") -> accumulate_operation(rest, sum, [n, ..values])
         #(n, "*") -> {
-          let product = list.fold([n, ..values], 1, fn(p, v) { p * v })
-          accumulate_operation(rest, sum + product, [])
+          accumulate_operation(rest, sum + int.product([n, ..values]), [])
         }
         #(n, "+") ->
           accumulate_operation(rest, sum + int.sum([n, ..values]), [])
