@@ -37,17 +37,10 @@ pub fn solve_p1(lines: List(String)) -> Result(String, String) {
 
 // Part 2
 pub fn solve_p2(lines: List(String)) -> Result(String, String) {
-  let line_length =
-    list.fold(lines, 0, fn(acc, v) { int.max(acc, string.length(v)) })
-
   lines
   |> list.map(fn(line) {
-    let new_line =
-      string.to_graphemes(line)
-      |> list.reverse
-
-    let n = line_length - list.length(new_line)
-    list.append(list.repeat(" ", n), new_line)
+    string.to_graphemes(line)
+    |> list.reverse
   })
   |> list.transpose
   |> list.filter(fn(l) {

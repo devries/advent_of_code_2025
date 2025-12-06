@@ -13,8 +13,11 @@ pub fn read_lines(
 ) -> Result(List(String), simplifile.FileError) {
   use content <- result.map(simplifile.read(from: filepath))
 
-  content
-  |> string.trim_end
+  // Drop one trailing newline if present
+  case string.ends_with(content, "\n") {
+    False -> content
+    True -> string.drop_end(content, 1)
+  }
   |> string.split("\n")
 }
 
