@@ -43,18 +43,12 @@ pub fn solve_p2(lines: List(String)) -> Result(String, String) {
     |> list.reverse
   })
   |> list.transpose
-  |> list.filter(fn(l) {
-    list.fold_until(l, False, fn(_, v) {
-      case v == " " {
-        True -> list.Continue(False)
-        False -> list.Stop(True)
-      }
-    })
-  })
-  |> list.map(fn(column) {
+  |> list.filter_map(fn(column) {
     let l = list.length(column)
     let #(numbers, operation) = list.split(column, l - 1)
-    let assert Ok(value) = string.join(numbers, "") |> string.trim |> int.parse
+    use value <- result.map(
+      string.join(numbers, "") |> string.trim |> int.parse,
+    )
     #(value, operation)
   })
   |> accumulate_operation(0, [])
