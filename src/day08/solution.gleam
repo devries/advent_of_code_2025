@@ -30,13 +30,8 @@ pub fn solve_p1(lines: List(String), connections: Int) -> Result(String, String)
 
   let closest_boxes =
     boxes
-    |> list.combinations(2)
-    |> list.map(fn(pair) {
-      case pair {
-        [b1, b2] -> #(#(b1, b2), dsq_boxes(b1, b2))
-        _ -> panic as "expected a pair of junctions"
-      }
-    })
+    |> list.combination_pairs
+    |> list.map(fn(pair) { #(pair, dsq_boxes(pair.0, pair.1)) })
     |> list.sort(fn(v1, v2) { int.compare(v1.1, v2.1) })
     |> list.take(connections)
     |> list.map(fn(t) { t.0 })
@@ -63,13 +58,8 @@ pub fn solve_p2(lines: List(String)) -> Result(String, String) {
 
   let closest_boxes =
     boxes
-    |> list.combinations(2)
-    |> list.map(fn(pair) {
-      case pair {
-        [b1, b2] -> #(#(b1, b2), dsq_boxes(b1, b2))
-        _ -> panic as "expected a pair of junctions"
-      }
-    })
+    |> list.combination_pairs
+    |> list.map(fn(pair) { #(pair, dsq_boxes(pair.0, pair.1)) })
     |> list.sort(fn(v1, v2) { int.compare(v1.1, v2.1) })
     |> list.map(fn(t) { t.0 })
 
