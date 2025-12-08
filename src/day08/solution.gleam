@@ -44,7 +44,6 @@ pub fn solve_p1(lines: List(String), connections: Int) -> Result(String, String)
   wire(dict.new(), closest_boxes)
   |> dict.to_list
   |> list.map(fn(dtup) { dtup.1 })
-  |> list.filter(fn(circuit) { set.size(circuit) > 1 })
   |> set.from_list
   |> set.to_list
   |> list.map(set.size)
