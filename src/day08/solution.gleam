@@ -41,15 +41,7 @@ pub fn solve_p1(lines: List(String), connections: Int) -> Result(String, String)
     |> list.take(connections)
     |> list.map(fn(t) { t.0 })
 
-  // This table has junction boxes as keys and the circuits they make
-  // as a set of junction boxes as a value. They all start with just
-  // themselves.
-  let circuit_table =
-    boxes
-    |> list.map(fn(box) { #(box, set.new() |> set.insert(box)) })
-    |> dict.from_list
-
-  wire(circuit_table, closest_boxes)
+  wire(dict.new(), closest_boxes)
   |> dict.to_list
   |> list.map(fn(dtup) { dtup.1 })
   |> list.filter(fn(circuit) { set.size(circuit) > 1 })
@@ -82,15 +74,7 @@ pub fn solve_p2(lines: List(String)) -> Result(String, String) {
     |> list.sort(fn(v1, v2) { int.compare(v1.1, v2.1) })
     |> list.map(fn(t) { t.0 })
 
-  // This table has junction boxes as keys and the circuits they make
-  // as a set of junction boxes as a value. They all start with just
-  // themselves.
-  let circuit_table =
-    boxes
-    |> list.map(fn(box) { #(box, set.new() |> set.insert(box)) })
-    |> dict.from_list
-
-  build_circuit_sized(dict.size(circuit_table), circuit_table, closest_boxes)
+  build_circuit_sized(list.length(boxes), dict.new(), closest_boxes)
   |> fn(v) { { v.0 }.x * { v.1 }.x }
   |> int.to_string
   |> Ok
@@ -121,9 +105,12 @@ fn wire(
   connections: List(#(Junction, Junction)),
 ) -> dict.Dict(Junction, set.Set(Junction)) {
   list.fold(connections, circuit_table, fn(acc, conn) {
-    let assert Ok(s1) = dict.get(acc, conn.0)
-    let assert Ok(s2) = dict.get(acc, conn.1)
+    // Get the circuit for a box, if it's not part of a circuit yet
+    // just provide a set containing only itself
+    let s1 = dict.get(acc, conn.0) |> result.unwrap(set.from_list([conn.0]))
+    let s2 = dict.get(acc, conn.1) |> result.unwrap(set.from_list([conn.1]))
 
+    // new combined circuit
     let combined = set.union(s1, s2)
 
     set.fold(combined, acc, fn(acc_inner, jb) {
@@ -143,9 +130,16 @@ fn build_circuit_sized(
   case connections {
     [] -> panic as "unable to build requested circuit size"
     [first, ..rest] -> {
-      let assert Ok(s1) = dict.get(circuit_table, first.0)
-      let assert Ok(s2) = dict.get(circuit_table, first.1)
+      // Get the circuit for a box, if it's not part of a circuit yet
+      // just provide a set containing only itself
+      let s1 =
+        dict.get(circuit_table, first.0)
+        |> result.unwrap(set.from_list([first.0]))
+      let s2 =
+        dict.get(circuit_table, first.1)
+        |> result.unwrap(set.from_list([first.1]))
 
+      // new combined circuit
       let combined = set.union(s1, s2)
 
       case set.size(combined) {
