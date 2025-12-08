@@ -56,7 +56,11 @@ pub fn duration_string(d: Duration) -> String {
 
     #(secs, nanos) if secs < 10 ->
       int.to_string(secs * 1000 + nanos / 1_000_000) <> " ms"
-    #(secs, nanos) -> int.to_string(secs + nanos / 1_000_000_000) <> " s"
+    #(secs, nanos) ->
+      int.to_string(secs)
+      <> "."
+      <> int.to_string(nanos / 1_000_000) |> string.pad_start(to: 3, with: "0")
+      <> " s"
   }
 }
 

@@ -1,3 +1,4 @@
+import gleam/time/duration
 import gleeunit
 import gleeunit/should
 import internal/aoc_utils
@@ -32,4 +33,13 @@ pub fn point_multiplication_test() {
 
   point.mul(#(2, 5), 0)
   |> should.equal(#(0, 0))
+}
+
+pub fn duration_to_string_test() {
+  assert aoc_utils.duration_string(duration.nanoseconds(123_000)) == "123 μs"
+  assert aoc_utils.duration_string(duration.milliseconds(1)) == "1000 μs"
+  assert aoc_utils.duration_string(duration.milliseconds(123)) == "123 ms"
+  assert aoc_utils.duration_string(duration.milliseconds(1234)) == "1234 ms"
+  assert aoc_utils.duration_string(duration.milliseconds(12_345)) == "12.345 s"
+  assert aoc_utils.duration_string(duration.milliseconds(12_340)) == "12.340 s"
 }
