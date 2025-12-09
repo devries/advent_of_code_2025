@@ -1,12 +1,12 @@
+//// Memoization in Gleam threw me for a loop, but an actor can hold
+//// the information I need. Below are the building blocks of an
+//// actor that holds a dict with a stone number and generations as
+//// a key, and the total count of stones will be descended from it
+//// after than many generations.
+
 import gleam/dict.{type Dict}
 import gleam/erlang/process.{type Subject}
 import gleam/otp/actor
-
-// Memoization in Gleam threw me for a loop, but an actor can hold
-// the information I need. Below are the building blocks of an
-// actor that holds a dict with a stone number and generations as
-// a key, and the total count of stones will be descended from it
-// after than many generations.
 
 pub type Message(a, b) {
   Put(key: a, value: b)
@@ -14,6 +14,7 @@ pub type Message(a, b) {
   Shutdown
 }
 
+/// A memoization cache. The state is held in an actor.
 pub type Cache(a, b) =
   Subject(Message(a, b))
 
@@ -28,12 +29,16 @@ pub fn handle_message(current: Dict(a, b), message: Message(a, b)) {
   }
 }
 
-// To check a cache first for a result first, before the rest of the function
-// runs add
-//    use <- cache_check(cache, #(param1, param2, ...))
-// It will look up those parameters in the cache and return a value if found.
-// otherwise it continues with the function and records the response for those
-// parameters.
+/// To check a cache first for a result first, before the rest of the function
+/// runs add
+///
+/// ```gleam
+/// use <- cache_check(cache, #(param1, param2, ...))
+/// ```
+/// 
+/// It will look up those parameters in the cache and return a value if found.
+/// otherwise it continues with the function and records the response for those
+/// parameters.
 pub fn cache_check(cache: Cache(a, b), key: a, callback: fn() -> b) -> b {
   let cache_result = process.call(cache, 100, Get(_, key))
 
@@ -60,10 +65,14 @@ pub fn cache_shutdown(cache: Cache(a, b)) {
   process.send(cache, Shutdown)
 }
 
-// To initialize a cache for the rest of a function, add
-//     use cache <- with_cache()
-// to the function. The rest of the function is a callback
-// with an actor holding the cache.
+/// To initialize a cache for the rest of a function, add
+///
+/// ```gleam
+/// use cache <- with_cache()
+/// ```
+/// 
+/// to the function. The rest of the function is a callback
+/// with an actor holding the cache.
 pub fn with_cache(callback: fn(Cache(a, b)) -> c) -> c {
   let cache = cache_init()
 
