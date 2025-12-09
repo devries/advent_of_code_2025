@@ -43,3 +43,17 @@ information.
 - [Day 6](https://adventofcode.com/2025/day/6): [⭐ ⭐ solution](src/day06/solution.gleam)
 - [Day 7](https://adventofcode.com/2025/day/7): [⭐ ⭐ solution](src/day07/solution.gleam)
 - [Day 8](https://adventofcode.com/2025/day/8): [⭐ ⭐ solution](src/day08/solution.gleam)
+
+    This was an interesting problem, and I ended up learning a few new things. If
+    you define a circuit as the set of all connected junctions, then you can find
+    the union of the sets to which the two junction boxes you are connecting belong
+    in order to find the new connected circuit. The difficulty is finding an
+    efficient way to look up a set given one element from the set. 
+    In my [initial solution](https://github.com/devries/advent_of_code_2025/blob/b4ecead2fd971f0fec5223da3679160b599e851e/src/day08/solution.gleam) I created a dict which had junction boxes as the key
+    and sets of junction boxes as the values. This meant changing the values of
+    all the elements in the dictionary that belonged to a set when a new union
+    was made. In the Gleam Discord the [disjoint-set data structure](https://en.wikipedia.org/wiki/Disjoint-set_data_structure)
+    came up as a way to do this more efficiently, so I decided to try it and
+    created a simple [disjoint-set library](src/internal/disjoint_set.gleam).
+    Using the new structure, and making a few other changes, the second part of
+    my [solution](src/day08/solution.gleam) is roughly 3 times faster.
