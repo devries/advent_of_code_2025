@@ -1,7 +1,7 @@
 # Advent of Code 2025
 
 [![Tests](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml/badge.svg)](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml)
-[![Stars: 18](https://img.shields.io/badge/⭐_Stars-18-yellow)](https://adventofcode.com/2025)
+[![Stars: 20](https://img.shields.io/badge/⭐_Stars-20-yellow)](https://adventofcode.com/2025)
 
 This year will be my second year doing Advent of Code in [Gleam](https://gleam.run).
 Last year I was still learning the language, and in the past year I have used it
@@ -65,13 +65,13 @@ information.
     but there is a line going through one of the walls. I ran out of time
     this morning to work on this and will pick it up later.
 
-- [Day 10](https://adventmfcode.com/2025/day/10): [⭐   solution](src/day010/solution.gleam)
+- [Day 10](https://adventmfcode.com/2025/day/10): [⭐   solution](src/day10/solution.gleam)
 
     I tried doing part 2 a naive way with some memoization, but it seems like
     I still need to work on it. Code was getting very convoluted anyway, not
     pretty like the first several days.
 
-- [Day 11](https://adventmfcode.com/2025/day/11): [⭐ ⭐ solution](src/day011/solution.gleam)
+- [Day 11](https://adventmfcode.com/2025/day/11): [⭐ ⭐ solution](src/day11/solution.gleam)
 
     Back on track with today's problem. This is a straightforward depth-first
     search, but I add memoization so I don't have to keep revisiting paths

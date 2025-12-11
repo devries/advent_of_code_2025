@@ -64,28 +64,28 @@ fn start_path_count(
 ) -> Int {
   use cache <- memoize.with_cache()
 
-  count_paths(links, start, end, 0, cache)
+  count_paths(links, start, end, cache)
 }
 
 fn count_paths(
   links: dict.Dict(String, set.Set(String)),
   start: String,
   end: String,
-  total: Int,
+  // total: Int,
   cache: memoize.Cache(String, Int),
 ) -> Int {
   use <- memoize.cache_check(cache, start)
 
   case start == end {
-    True -> total + 1
+    True -> 1
     False -> {
       let next_steps = case dict.get(links, start) {
         Ok(s) -> s |> set.to_list
         Error(_) -> []
       }
 
-      list.fold(next_steps, total, fn(acc, next) {
-        acc + count_paths(links, next, end, 0, cache)
+      list.fold(next_steps, 0, fn(acc, next) {
+        acc + count_paths(links, next, end, cache)
       })
     }
   }
