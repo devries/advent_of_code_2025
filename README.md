@@ -70,3 +70,9 @@ information.
     I tried doing part 2 a naive way with some memoization, but it seems like
     I still need to work on it. Code was getting very convoluted anyway, not
     pretty like the first several days.
+
+- [Day 11](https://adventmfcode.com/2025/day/11): [⭐ ⭐ solution](src/day011/solution.gleam)
+
+    Back on track with today's problem. This is a straightforward depth-first
+    search, but I add memoization so I don't have to keep revisiting paths
+    I have counted before.
