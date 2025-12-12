@@ -1,4 +1,3 @@
-import gleam/deque
 import gleam/dict
 import gleam/int
 import gleam/io

@@ -1,7 +1,7 @@
 # Advent of Code 2025
 
 [![Tests](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml/badge.svg)](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml)
-[![Stars: 20](https://img.shields.io/badge/⭐_Stars-20-yellow)](https://adventofcode.com/2025)
+[![Stars: 23](https://img.shields.io/badge/⭐_Stars-23-yellow)](https://adventofcode.com/2025)
 
 This year will be my second year doing Advent of Code in [Gleam](https://gleam.run).
 Last year I was still learning the language, and in the past year I have used it
@@ -58,21 +58,28 @@ information.
     Using the new structure, and making a few other changes, the second part of
     my [solution](src/day08/solution.gleam) is roughly 3 times faster.
 
-- [Day 9](https://adventmfcode.com/2025/day/9): [⭐   solution](src/day09/solution.gleam)
+- [Day 9](https://adventofcode.com/2025/day/9): [⭐   solution](src/day09/solution.gleam)
 
     I ran into an issue doing part 2. I think it is that I am only checking if
     the corners are inside the figure. It may be that the corners are inside,
     but there is a line going through one of the walls. I ran out of time
     this morning to work on this and will pick it up later.
 
-- [Day 10](https://adventmfcode.com/2025/day/10): [⭐   solution](src/day10/solution.gleam)
+- [Day 10](https://adventofcode.com/2025/day/10): [⭐   solution](src/day10/solution.gleam)
 
     I tried doing part 2 a naive way with some memoization, but it seems like
     I still need to work on it. Code was getting very convoluted anyway, not
     pretty like the first several days.
 
-- [Day 11](https://adventmfcode.com/2025/day/11): [⭐ ⭐ solution](src/day11/solution.gleam)
+- [Day 11](https://adventofcode.com/2025/day/11): [⭐ ⭐ solution](src/day11/solution.gleam)
 
     Back on track with today's problem. This is a straightforward depth-first
     search, but I add memoization so I don't have to keep revisiting paths
     I have counted before.
+
+- [Day 12](https://adventofcode.com/2025/day/12): [⭐   solution](src/day12/solution.gleam)
+
+    As I was filtering my input for cases that would require rotation and
+    flipping I realized that none did. There was either enough room for a
+    3x3 present within the area or not enough room for the total area of
+    presents provided. Therefore I didn't have to do anything complex.
