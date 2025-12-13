@@ -1,7 +1,7 @@
 # Advent of Code 2025
 
 [![Tests](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml/badge.svg)](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml)
-[![Stars: 21](https://img.shields.io/badge/⭐_Stars-21-yellow)](https://adventofcode.com/2025)
+[![Stars: 22](https://img.shields.io/badge/⭐_Stars-22-yellow)](https://adventofcode.com/2025)
 
 This year will be my second year doing Advent of Code in [Gleam](https://gleam.run).
 Last year I was still learning the language, and in the past year I have used it
@@ -58,12 +58,14 @@ information.
     Using the new structure, and making a few other changes, the second part of
     my [solution](src/day08/solution.gleam) is roughly 3 times faster.
 
-- [Day 9](https://adventofcode.com/2025/day/9): [⭐   solution](src/day09/solution.gleam)
+- [Day 9](https://adventofcode.com/2025/day/9): [⭐ ⭐ solution](src/day09/solution.gleam)
 
     I ran into an issue doing part 2. I think it is that I am only checking if
     the corners are inside the figure. It may be that the corners are inside,
     but there is a line going through one of the walls. I ran out of time
     this morning to work on this and will pick it up later.
+
+    After adding detection of figure edges intersecting box edges, it worked.
 
 - [Day 10](https://adventofcode.com/2025/day/10): [⭐   solution](src/day10/solution.gleam)
 
