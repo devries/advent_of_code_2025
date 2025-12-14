@@ -14,3 +14,10 @@ pub fn part2_test() {
   let lines = string.split(testinput, "\n")
   assert solution.solve_p2(lines) == Ok("33")
 }
+
+pub fn panic_bug_test() {
+  let lines = [
+    "[#...##] (0,4,5) (3,4) (0,1,2,3,5) (1,2) (1) {13,28,18,18,19,13}",
+  ]
+  solution.solve_p2(lines)
+}

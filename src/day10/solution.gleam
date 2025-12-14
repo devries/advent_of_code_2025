@@ -1,10 +1,9 @@
-import gleam/deque
 import gleam/dict
-import gleam/erlang/process
 import gleam/int
 import gleam/io
 import gleam/list
 import gleam/option
+import gleam/order
 import gleam/result
 import gleam/set
 import gleam/string
@@ -62,6 +61,8 @@ pub fn solve_p1(lines: List(String)) -> Result(String, String) {
 }
 
 // Part 2
+// see https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/
+// for an explanation of this method (I did not come up with it).
 pub fn solve_p2(lines: List(String)) -> Result(String, String) {
   lines
   |> list.map(fn(row) {
@@ -71,7 +72,6 @@ pub fn solve_p2(lines: List(String)) -> Result(String, String) {
     let assert Ok(count_string) = list.first(count_list)
     let joltages = parse_joltages(count_string)
 
-    echo joltages
     let assert Ok(button_strings) = dict.get(parts, "buttons")
     let buttons =
       button_strings
@@ -79,15 +79,10 @@ pub fn solve_p2(lines: List(String)) -> Result(String, String) {
         parse_button(one_button) |> button_to_list(list.length(joltages))
       })
 
-    use cache <- memoize.with_cache()
+    let patterns = parity_patterns(buttons)
+    // patterns |> dict.to_list |> list.map(fn(v) { echo v })
 
-    let queue =
-      list.fold(buttons, deque.new(), fn(acc, b) {
-        deque.push_back(acc, #(b, 1))
-      })
-
-    find_p2_solution(cache, queue, buttons, joltages)
-    |> echo
+    solve_one_joltage(patterns, joltages)
   })
   |> int.sum
   |> int.to_string
@@ -191,63 +186,103 @@ fn list_subtract(left: List(Int), right: List(Int)) -> List(Int) {
   list.map(pairs, fn(tup) { tup.0 - tup.1 })
 }
 
-fn find_p2_solution(
-  cache: memoize.Cache(List(Int), Int),
-  queue: deque.Deque(#(List(Int), Int)),
-  buttons: List(List(Int)),
-  joltages: List(Int),
-) -> Int {
-  case deque.pop_front(queue) {
-    Error(Nil) -> panic as "no solution found"
-    Ok(#(#(current, pushes), new_deque)) -> {
-      let new_sums =
-        buttons
-        |> list.map(list_add(_, current))
+fn is_not_negative(joltages: List(Int)) -> Bool {
+  joltages
+  |> list.filter(fn(v) { v < 0 })
+  |> list.length
+  |> fn(l) { l == 0 }
+}
 
-      let remains =
-        list.map(new_sums, list_subtract(joltages, _))
-        // remove negatives
-        |> list.filter(fn(l) {
-          list.fold_until(l, True, fn(_, element) {
-            case element < 0 {
-              True -> list.Stop(False)
-              False -> list.Continue(True)
-            }
-          })
+fn is_zero(joltages: List(Int)) -> Bool {
+  joltages
+  |> list.filter(fn(v) { v != 0 })
+  |> list.length
+  |> fn(l) { l == 0 }
+}
+
+fn parity_patterns(buttons: List(List(Int))) -> dict.Dict(List(Int), Int) {
+  list.range(1, list.length(buttons))
+  |> list.fold(dict.new(), fn(patterns, pushes) {
+    list.combinations(buttons, pushes)
+    |> list.fold(patterns, fn(acc, button_presses) {
+      let result = case list.reduce(button_presses, list_add) {
+        Ok(r) -> r
+        Error(Nil) -> panic as "no buttons?"
+      }
+      dict.upsert(acc, result, fn(current) {
+        let push_count = list.length(button_presses)
+        case current {
+          option.None -> push_count
+          option.Some(v) -> int.min(push_count, v)
+        }
+      })
+    })
+  })
+}
+
+fn solve_one_joltage(patterns: dict.Dict(List(Int), Int), joltages: List(Int)) {
+  use cache <- memoize.with_cache()
+
+  case bifurcation_solution(patterns, joltages, cache) {
+    Ok(v) -> v
+    Error(Nil) -> panic as "no solution found"
+  }
+}
+
+fn bifurcation_solution(
+  patterns: dict.Dict(List(Int), Int),
+  joltages: List(Int),
+  cache: memoize.Cache(List(Int), Result(Int, Nil)),
+) -> Result(Int, Nil) {
+  use <- memoize.cache_check(cache, joltages)
+  case is_zero(joltages) {
+    True -> Ok(0)
+    False -> {
+      let parity = list.map(joltages, fn(v) { v % 2 })
+
+      let possible_counts =
+        patterns
+        |> dict.keys
+        |> list.filter(fn(p) { list.map(p, fn(v) { v % 2 }) == parity })
+        |> list.filter_map(fn(p) {
+          let remaining_jolts = list_subtract(joltages, p)
+          let assert Ok(press_count) = dict.get(patterns, p)
+
+          case is_not_negative(remaining_jolts) {
+            True ->
+              case
+                bifurcation_solution(
+                  patterns,
+                  list.map(remaining_jolts, fn(v) { v / 2 }),
+                  cache,
+                )
+              {
+                Ok(n) -> Ok({ 2 * n } + press_count)
+                Error(Nil) -> Error(Nil)
+              }
+            False -> Error(Nil)
+          }
         })
 
-      // check if you found it
-      case list.contains(remains, list.repeat(0, list.length(joltages))) {
-        True -> pushes + 1
-        False -> {
-          // check if the cache has a way to complete this value
-          let cache_result =
-            remains
-            |> list.map(fn(k) { process.call(cache, 100, memoize.Get(_, k)) })
-            |> list.fold_until(0, fn(_, cache_value) {
-              case cache_value {
-                Ok(v) -> list.Stop(v + pushes + 1)
-                Error(Nil) -> list.Continue(0)
-              }
-            })
-
-          case cache_result {
-            0 -> {
-              // add results to cache, queue, and keep going
-              list.each(new_sums, fn(sum) {
-                process.send(cache, memoize.Put(sum, pushes + 1))
-              })
-
-              let new_deque =
-                list.fold(new_sums, new_deque, fn(acc, sum) {
-                  deque.push_back(acc, #(sum, pushes + 1))
-                })
-
-              find_p2_solution(cache, new_deque, buttons, joltages)
-            }
-            v -> v
+      let all_counts = case is_zero(parity) {
+        True ->
+          case
+            bifurcation_solution(
+              patterns,
+              list.map(joltages, fn(v) { v / 2 }),
+              cache,
+            )
+          {
+            Ok(n) -> [2 * n, ..possible_counts]
+            Error(Nil) -> possible_counts
           }
-        }
+        False -> possible_counts
+      }
+
+      case all_counts {
+        [] -> Error(Nil)
+        _ ->
+          list.max(all_counts, fn(a, b) { int.compare(a, b) |> order.negate })
       }
     }
   }

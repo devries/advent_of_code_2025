@@ -1,7 +1,7 @@
 # Advent of Code 2025
 
 [![Tests](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml/badge.svg)](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml)
-[![Stars: 22](https://img.shields.io/badge/⭐_Stars-22-yellow)](https://adventofcode.com/2025)
+[![Stars: 24](https://img.shields.io/badge/⭐_Stars-24-yellow)](https://adventofcode.com/2025)
 
 This year will be my second year doing Advent of Code in [Gleam](https://gleam.run).
 Last year I was still learning the language, and in the past year I have used it
@@ -67,11 +67,14 @@ information.
 
     After adding detection of figure edges intersecting box edges, it worked.
 
-- [Day 10](https://adventofcode.com/2025/day/10): [⭐   solution](src/day10/solution.gleam)
+- [Day 10](https://adventofcode.com/2025/day/10): [⭐ ⭐ solution](src/day10/solution.gleam)
 
     I tried doing part 2 a naive way with some memoization, but it seems like
     I still need to work on it. Code was getting very convoluted anyway, not
     pretty like the first several days.
+
+    LittleLily in the Gleam discord references [this post](https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/)
+    on reddit which I followed to eventually complete part 2.
 
 - [Day 11](https://adventofcode.com/2025/day/11): [⭐ ⭐ solution](src/day11/solution.gleam)
 
@@ -79,7 +82,7 @@ information.
     search, but I add memoization so I don't have to keep revisiting paths
     I have counted before.
 
-- [Day 12](https://adventofcode.com/2025/day/12): [⭐   solution](src/day12/solution.gleam)
+- [Day 12](https://adventofcode.com/2025/day/12): [⭐ ⭐ solution](src/day12/solution.gleam)
 
     As I was filtering my input for cases that would require rotation and
     flipping I realized that none did. There was either enough room for a
