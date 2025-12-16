@@ -7,6 +7,7 @@ import gleam/string_tree
 import glint
 import handles
 import handles/ctx
+import handles/format
 import simplifile
 
 pub fn main() -> Nil {
@@ -79,13 +80,29 @@ fn generate_template(day_number) -> Result(Nil, Nil) {
   use sol_template <- result.try(
     handles.prepare(sol_input)
     |> result.map_error(fn(e) {
-      io.println_error("Error parsing solution.gleam: " <> string.inspect(e))
+      case
+        format.format_tokenizer_error(
+          e,
+          "Error parsing solution.gleam: {{ . }}",
+        )
+      {
+        Error(_) -> io.println_error("Unknown error parsing solution.gleam")
+        Ok(v) -> io.println_error(v)
+      }
     }),
   )
   use test_template <- result.try(
     handles.prepare(test_input)
     |> result.map_error(fn(e) {
-      io.println_error("Error parsing dayXX_test.gleam: " <> string.inspect(e))
+      case
+        format.format_tokenizer_error(
+          e,
+          "Error parsing dayXX_test.gleam: {{ . }}",
+        )
+      {
+        Error(_) -> io.println_error("Unknown error parsing dayXX_test.gleam")
+        Ok(v) -> io.println_error(v)
+      }
     }),
   )
 
@@ -95,16 +112,33 @@ fn generate_template(day_number) -> Result(Nil, Nil) {
   use sol_tree <- result.try(
     handles.run(sol_template, ctx.Str(day_value), [])
     |> result.map_error(fn(e) {
-      io.println_error("Error rendering solution.gleam: " <> string.inspect(e))
+      case
+        format.format_runtime_error(
+          e,
+          "Error rendering solution.gleam: {{ . }}",
+        )
+      {
+        Error(_) -> io.println_error("Unknown error rendering solution.gleam")
+        Ok(v) -> io.println_error(v)
+      }
     }),
   )
 
   use test_tree <- result.try(
     handles.run(test_template, ctx.Str(day_value), [])
     |> result.map_error(fn(e) {
-      io.println_error(
-        "Error rendering dayXX_test.gleam: " <> string.inspect(e),
-      )
+      case
+        format.format_runtime_error(
+          e,
+          "Error rendering day" <> day_value <> "_test.gleam: {{ . }}",
+        )
+      {
+        Error(_) ->
+          io.println_error(
+            "Unknown error rendering day" <> day_value <> "_test.gleam",
+          )
+        Ok(v) -> io.println_error(v)
+      }
     }),
   )
 
