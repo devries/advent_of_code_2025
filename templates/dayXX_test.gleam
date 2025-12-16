@@ -1,4 +1,4 @@
-import day<%= day %>/solution
+import day{{ . }}/solution
 import gleam/string
 
 const testinput = ""
