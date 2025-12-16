@@ -2,7 +2,7 @@ import gleam/io
 import internal/aoc_utils
 
 pub fn main() {
-  let filename = "inputs/day<%= day%>.txt"
+  let filename = "inputs/day{{ . }}.txt"
 
   let lines_result = aoc_utils.read_lines(from: filename)
   case lines_result {

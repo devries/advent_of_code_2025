@@ -1,14 +1,12 @@
 import argv
-import gleam/dict
 import gleam/int
 import gleam/io
 import gleam/result
 import gleam/string
 import gleam/string_tree
-import glemplate/assigns
-import glemplate/parser
-import glemplate/text
 import glint
+import handles
+import handles/ctx
 import simplifile
 
 pub fn main() -> Nil {
@@ -58,7 +56,6 @@ fn new_day() -> glint.Command(Nil) {
 }
 
 fn generate_template(day_number) -> Result(Nil, Nil) {
-  let p = parser.new()
   use sol_input <- result.try(
     simplifile.read(from: "templates/solution.gleam")
     |> result.map_error(fn(e) {
@@ -80,13 +77,13 @@ fn generate_template(day_number) -> Result(Nil, Nil) {
   )
 
   use sol_template <- result.try(
-    parser.parse_to_template(sol_input, "solution.gleam", p)
+    handles.prepare(sol_input)
     |> result.map_error(fn(e) {
       io.println_error("Error parsing solution.gleam: " <> string.inspect(e))
     }),
   )
   use test_template <- result.try(
-    parser.parse_to_template(test_input, "dayXX_test.gleam", p)
+    handles.prepare(test_input)
     |> result.map_error(fn(e) {
       io.println_error("Error parsing dayXX_test.gleam: " <> string.inspect(e))
     }),
@@ -95,17 +92,15 @@ fn generate_template(day_number) -> Result(Nil, Nil) {
   let day_value =
     day_number |> int.to_string |> string.pad_start(to: 2, with: "0")
 
-  let vals = dict.from_list([#("day", assigns.String(day_value))])
-
   use sol_tree <- result.try(
-    text.render(sol_template, vals, dict.new())
+    handles.run(sol_template, ctx.Str(day_value), [])
     |> result.map_error(fn(e) {
       io.println_error("Error rendering solution.gleam: " <> string.inspect(e))
     }),
   )
 
   use test_tree <- result.try(
-    text.render(test_template, vals, dict.new())
+    handles.run(test_template, ctx.Str(day_value), [])
     |> result.map_error(fn(e) {
       io.println_error(
         "Error rendering dayXX_test.gleam: " <> string.inspect(e),
