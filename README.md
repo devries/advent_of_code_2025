@@ -49,7 +49,7 @@ information.
     the union of the sets to which the two junction boxes you are connecting belong
     in order to find the new connected circuit. The difficulty is finding an
     efficient way to look up a set given one element from the set. 
-    In my [initial solution](https://code.unnecessary.tech/devries/advent_of_code_2025/blob/b4ecead2fd971f0fec5223da3679160b599e851e/src/day08/solution.gleam) I created a dict which had junction boxes as the key
+    In my  [initial solution](https://code.unnecessary.tech/devries/advent_of_code_2025/src/commit/b4ecead2fd971f0fec5223da3679160b599e851e/src/day08/solution.gleam) I created a dict which had junction boxes as the key
     and sets of junction boxes as the values. This meant changing the values of
     all the elements in the dictionary that belonged to a set when a new union
     was made. In the Gleam Discord the [disjoint-set data structure](https://en.wikipedia.org/wiki/Disjoint-set_data_structure)
