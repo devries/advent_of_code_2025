@@ -1,6 +1,6 @@
 # Advent of Code 2025
 
-[![Tests](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml/badge.svg)](https://github.com/devries/advent_of_code_2025/actions/workflows/test.yml)
+[![Tests](https://code.unnecessary.tech/devries/advent_of_code_2025/badges/workflows/test.yml/badge.svg)](https://code.unnecessary.tech/devries/advent_of_code_2025/workflows/test.yml)
 [![Stars: 24](https://img.shields.io/badge/⭐_Stars-24-yellow)](https://adventofcode.com/2025)
 
 This year will be my second year doing Advent of Code in [Gleam](https://gleam.run).
