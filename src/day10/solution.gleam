@@ -163,6 +163,8 @@ fn press_buttons(buttons: List(Button)) -> set.Set(Int) {
   |> set.from_list
 }
 
+// Converts a list of wire numbers to an array of 0s and 1s with a 1
+// at each position where a wire is activated by the button.
 fn button_to_list(button: Button, length: Int) -> List(Int) {
   let wires = set.from_list(button.wires)
 
@@ -200,6 +202,8 @@ fn is_zero(joltages: List(Int)) -> Bool {
   |> fn(l) { l == 0 }
 }
 
+// This sums all the wire joltages from all the combinations of pushing
+// every button 0 or 1 times.
 fn parity_patterns(buttons: List(List(Int))) -> dict.Dict(List(Int), Int) {
   list.range(1, list.length(buttons))
   |> list.fold(dict.new(), fn(patterns, pushes) {
@@ -210,16 +214,17 @@ fn parity_patterns(buttons: List(List(Int))) -> dict.Dict(List(Int), Int) {
         Error(Nil) -> panic as "no buttons?"
       }
       dict.upsert(acc, result, fn(current) {
-        let push_count = list.length(button_presses)
         case current {
-          option.None -> push_count
-          option.Some(v) -> int.min(push_count, v)
+          option.None -> pushes
+          option.Some(v) -> int.min(pushes, v)
         }
       })
     })
   })
 }
 
+// This solves the button push count given the parity patterns above to achieve one
+// set of joltages.
 fn solve_one_joltage(patterns: dict.Dict(List(Int), Int), joltages: List(Int)) {
   use cache <- memoize.with_cache()
 
@@ -229,6 +234,12 @@ fn solve_one_joltage(patterns: dict.Dict(List(Int), Int), joltages: List(Int)) {
   }
 }
 
+// This solution works by looking at the parity of the joltages
+// (even or odd) and realizing if they are all even then you can
+// divide them by two and just find the minimum pushes to get
+// half the joltages and doubling them. If they are not all even
+// you just find any push combinations that make them even and add
+// those. 
 fn bifurcation_solution(
   patterns: dict.Dict(List(Int), Int),
   joltages: List(Int),
@@ -240,6 +251,14 @@ fn bifurcation_solution(
     False -> {
       let parity = list.map(joltages, fn(v) { v % 2 })
 
+      // Take all possible combinations of putten pushes that would yield
+      // an even parity in the next step, but not go negative. Then
+      // recurse through the solution that is 1/2 the resulting even
+      // parity solution and add double that count to the current number
+      // of pushes.
+      //
+      // Note: Even if the parity starts at even, you still need to go
+      // through potentially pushes that yield another even parity step.
       let possible_counts =
         patterns
         |> dict.keys
@@ -264,6 +283,9 @@ fn bifurcation_solution(
           }
         })
 
+      // There is one corner case, which is when the parity is even
+      // then you can also divide the result in half without pushing
+      // any buttons.
       let all_counts = case is_zero(parity) {
         True ->
           case
@@ -279,6 +301,8 @@ fn bifurcation_solution(
         False -> possible_counts
       }
 
+      // Return the minimum. Note that list.max is finding the maximum
+      // but I am using int.compare |> order.negate to reverse the ordering.
       case all_counts {
         [] -> Error(Nil)
         _ ->
