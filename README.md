@@ -15,7 +15,7 @@ interested in Gleam to [take the language tour](https://tour.gleam.run/) and
 To start a new day's problem use the command
 
 ```sh
-gleam run new --day=1
+gleam dev new --day=1
 ```
 where `1` is the day number of the problem. This will create some starting
 code in the `src/day01` directory as well as a test in the `test` directory.
