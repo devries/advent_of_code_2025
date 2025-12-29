@@ -12,7 +12,7 @@ import simplifile
 
 pub fn main() -> Nil {
   glint.new()
-  |> glint.with_name("aoc-dev")
+  |> glint.with_name("gleam dev")
   |> glint.pretty_help(glint.default_pretty_help())
   |> glint.add(at: [], do: explain())
   |> glint.add(at: ["new"], do: new_day())
