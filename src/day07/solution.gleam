@@ -2,6 +2,7 @@ import gleam/dict
 import gleam/int
 import gleam/io
 import gleam/list
+import gleam/option
 import gleam/result
 import gleam/set
 import gleam/string
@@ -115,16 +116,12 @@ fn count_timelines(
             dict.get(beam_timelines, splitter_idx) |> result.unwrap(0)
 
           dict.insert(acc, splitter_idx, 0)
-          |> dict.insert(
-            splitter_idx - 1,
-            { dict.get(acc, splitter_idx - 1) |> result.unwrap(0) }
-              + timeline_count,
-          )
-          |> dict.insert(
-            splitter_idx + 1,
-            { dict.get(acc, splitter_idx + 1) |> result.unwrap(0) }
-              + timeline_count,
-          )
+          |> dict.upsert(splitter_idx - 1, fn(ival) {
+            option.unwrap(ival, 0) + timeline_count
+          })
+          |> dict.upsert(splitter_idx + 1, fn(ival) {
+            option.unwrap(ival, 0) + timeline_count
+          })
         })
 
       count_timelines(rest, new_beam_timelines)
