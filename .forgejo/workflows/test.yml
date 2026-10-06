@@ -12,4 +12,5 @@ jobs:
     runs-on: docker
     steps:
       - uses: https://data.forgejo.org/actions/checkout@v4
-      - uses: https://code.unnecessary.tech/devries/gleam-test-action@v2
+      - uses: docker://ghcr.io/gleam-lang/gleam:v1.19.0-erlang-slim
+        run: gleam test
